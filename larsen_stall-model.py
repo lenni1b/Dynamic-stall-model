@@ -20,8 +20,8 @@ def force_to_coefficient(force, u_inf):
     return 2 * force / (RHO * CHORD * u_inf**2)
 
 # fourier series defintions
-tau = 0.97715
-def fourier12(x, C, tau, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12):
+tau = 0.6
+def fourier12(x, C, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12):
     return C + a1 * np.cos(1 * np.pi / tau * x) + \
            a2 * np.cos(2 * np.pi / tau * x) + \
            a3 * np.cos(3 * np.pi / tau * x) + \
@@ -29,18 +29,18 @@ def fourier12(x, C, tau, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12):
            a5 * np.cos(5 * np.pi / tau * x) + \
            a6 * np.cos(6 * np.pi / tau * x) + \
            a7 * np.cos(7 * np.pi / tau * x) + \
-           a8 * np.cos(7 * np.pi / tau * x) + \
-           a9 * np.cos(7 * np.pi / tau * x) + \
-           a10 * np.cos(7 * np.pi / tau * x) + \
-           a11 * np.cos(7 * np.pi / tau * x) + \
-           a12 * np.cos(8 * np.pi / tau * x)
+           a8 * np.cos(8 * np.pi / tau * x) + \
+           a9 * np.cos(9 * np.pi / tau * x) + \
+           a10 * np.cos(10 * np.pi / tau * x) + \
+           a11 * np.cos(11 * np.pi / tau * x) + \
+           a12 * np.cos(12 * np.pi / tau * x)
 # static stall approximation
 stallangle = 5.8 * np.pi/180
 # Import measurements
 angles = []
 cl = []
 mz = []
-with open('static_results_zigzag.csv', 'r') as f:
+with open('static_results_zigzag_deepstall.csv', 'r') as f:
     reader = csv.DictReader(f, delimiter=';')
     for row in reader:
         cl.append(float(row['cl']))
@@ -86,7 +86,7 @@ plt.scatter(np.abs(angles_temp)*180/np.pi, f_temp, s=10)
 # Fit a function to the separation point function f
 
 popt1, pcov = curve_fit(fourier12, angles_temp, f_temp, maxfev=5000)
-plot_angles = np.arange(0, 20, 0.05)*np.pi/180
+plot_angles = np.arange(0, 55, 0.05)*np.pi/180
 plot_f = []
 for angle in plot_angles:
     plot_f.append(fourier12(angle, *popt1))
@@ -110,4 +110,4 @@ for angle in plot_angles:
 
 plt.plot(plot_angles*180/np.pi, plot_f_final)
 plt.ylim([0, 1.1])
-plt.xlim([0, 25])
+plt.xlim([0, 55])
